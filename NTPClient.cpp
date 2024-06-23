@@ -136,6 +136,24 @@ unsigned long NTPClient::getEpochTime() const {
          ((millis() - this->_lastUpdate) / 1000); // Time since last update
 }
 
+unsigned long NTPClient::getEpochTimeNoOffset() const {
+  return this->_currentEpoc + // Epoch returned by the NTP server
+         ((millis() - this->_lastUpdate) / 1000); // Time since last update
+}
+
+int NTPClient::getDayNoOffset() const {
+  return (((this->getEpochTimeNoOffset()  / 86400L) + 4 ) % 7); //0 is Sunday
+}
+int NTPClient::getHoursNoOffset() const {
+  return ((this->getEpochTimeNoOffset()  % 86400L) / 3600);
+}
+int NTPClient::getMinutesNoOffset() const {
+  return ((this->getEpochTimeNoOffset() % 3600) / 60);
+}
+int NTPClient::getSecondsNoOffset() const {
+  return (this->getEpochTimeNoOffset() % 60);
+}
+
 int NTPClient::getDay() const {
   return (((this->getEpochTime()  / 86400L) + 4 ) % 7); //0 is Sunday
 }
@@ -161,6 +179,20 @@ String NTPClient::getFormattedTime() const {
   String secondStr = seconds < 10 ? "0" + String(seconds) : String(seconds);
 
   return hoursStr + ":" + minuteStr + ":" + secondStr;
+}
+
+String NTPClient::getFormattedTimeUTC() const {
+  unsigned long rawTimeUTC = this->getEpochTimeNoOffset();
+  unsigned long hoursUTC = (rawTimeUTC % 86400L) / 3600;
+  String hoursUTCStr = hoursUTC < 10 ? "0" + String(hoursUTC) : String(hoursUTC);
+
+  unsigned long minutesUTC = (rawTimeUTC % 3600) / 60;
+  String minuteUTCStr = minutesUTC < 10 ? "0" + String(minutesUTC) : String(minutesUTC);
+
+  unsigned long secondsUTC = rawTimeUTC % 60;
+  String secondUTCStr = secondsUTC < 10 ? "0" + String(secondsUTC) : String(secondsUTC);
+
+  return hoursUTCStr + ":" + minuteUTCStr + ":" + secondUTCStr;
 }
 
 void NTPClient::end() {

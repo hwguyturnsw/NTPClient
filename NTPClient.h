@@ -82,9 +82,13 @@ class NTPClient {
     bool isTimeSet() const;
 
     int getDay() const;
+    int getDayNoOffset() const;
     int getHours() const;
+    int getHoursNoOffset() const;
     int getMinutes() const;
+    int getMinutesNoOffset() const;
     int getSeconds() const;
+    int getSecondsNoOffset() const;
 
     /**
      * Changes the time offset. Useful for changing timezones dynamically
@@ -101,11 +105,13 @@ class NTPClient {
      * @return time formatted like `hh:mm:ss`
      */
     String getFormattedTime() const;
+	String getFormattedTimeUTC() const;
 
     /**
      * @return time in seconds since Jan. 1, 1970
      */
     unsigned long getEpochTime() const;
+    unsigned long getEpochTimeNoOffset() const;
 
     /**
      * Stops the underlying UDP client
